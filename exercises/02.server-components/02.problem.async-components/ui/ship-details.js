@@ -1,12 +1,12 @@
 import { createElement as h } from 'react'
 // 💰 you're gonna need this:
-// import { getShip } from '../db/ship-api.js'
+import { getShip } from '../db/ship-api.js'
 import { getImageUrlForShip } from './img-utils.js'
 
-// 🐨 replace the ship prop with a shipId prop
-export function ShipDetails({ ship }) {
+export async function ShipDetails({ shipId }) {
 	// 🐨 get the ship using getShip({ shipId })
 	// 💰 you can use async/await!
+	let ship = await getShip({ shipId })
 	const shipImgSrc = getImageUrlForShip(ship.id, { size: 200 })
 	return h(
 		'div',

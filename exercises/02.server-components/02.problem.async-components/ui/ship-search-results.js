@@ -1,12 +1,15 @@
 import { createElement as h } from 'react'
 // 💰 you're gonna need this
-// import { searchShips } from '../db/ship-api.js'
+import { searchShips } from '../db/ship-api.js'
 import { getImageUrlForShip } from './img-utils.js'
 
 // 💣 remove the shipResults prop
-export function SearchResults({ shipId: currentShipId, shipResults, search }) {
+export async function SearchResults({ shipId: currentShipId, search }) {
 	// 🐨 get the shipResults from searchShips({ search })
 	// 💰 you can use async/await!
+	let shipResults = await searchShips({
+		search
+	})
 	return shipResults.ships.map(ship => {
 		const href = [
 			`/${ship.id}`,

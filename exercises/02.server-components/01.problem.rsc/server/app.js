@@ -2,16 +2,16 @@ import { readFile } from 'fs/promises'
 import { serve } from '@hono/node-server'
 import { serveStatic } from '@hono/node-server/serve-static'
 // 💰 you're gonna need this
-// import { RESPONSE_ALREADY_SENT } from '@hono/node-server/utils/response'
+import { RESPONSE_ALREADY_SENT } from '@hono/node-server/utils/response'
 import closeWithGrace from 'close-with-grace'
 import { Hono } from 'hono'
 import { trimTrailingSlash } from 'hono/trailing-slash'
 // 💰 you'll need these
-// import { createElement as h } from 'react'
-// import { renderToPipeableStream } from 'react-server-dom-esm/server'
+import { createElement as h } from 'react'
+import { renderToPipeableStream } from 'react-server-dom-esm/server'
 import { getShip, searchShips } from '../db/ship-api.js'
 // 💰 you'll want this too:
-// import { App } from '../ui/app.js'
+import { App } from '../ui/app.js'
 
 const PORT = process.env.PORT || 3000
 
@@ -46,7 +46,7 @@ app.use(async (context, next) => {
 })
 
 // 🐨 change this from /api to /rsc
-app.get('/api/:shipId?', async context => {
+app.get('/rsc/:shipId?', async context => {
 	const shipId = context.req.param('shipId') || null
 	const search = context.req.query('search') || ''
 	const ship = shipId ? await getShip({ shipId }) : null
@@ -54,16 +54,17 @@ app.get('/api/:shipId?', async context => {
 	// 🐨 rename data to props
 	const data = { shipId, search, ship, shipResults }
 	// 💣 remove this return context.json
-	return context.json(data)
+	// return context.json(data)
 	// 🐨 call renderToPipeableStream from react-server-dom-esm/server
 	// and pass it the App component and the props
+	renderToPipeableStream(h(App, data)).pipe(context.env.outgoing)
 	// 💰 remember, we don't have a JSX transformer here, so you'll use
 	// createElement directly which we aliased to `h` for brievity above.
 	// 🦉 renderToPipeableStream returns an object with a pipe function
 	// 🐨 pipe the content through the outgoing response
 	// 💰 pipe(context.env.outgoing)
 	// 🐨 let Hono know we're going to stream on the response
-	// 💰 return RESPONSE_ALREADY_SENT
+	return RESPONSE_ALREADY_SENT
 })
 
 app.get('/:shipId?', async context => {

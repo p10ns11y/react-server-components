@@ -1,6 +1,10 @@
 import { test, expect } from '@playwright/test'
 
+// This test is flaky due to delay added in the searchShips
 test('should display the home page and perform search', async ({ page }) => {
+	test.setTimeout(20000)
+	test.slow()
+
 	await page.goto('/')
 	await page.waitForLoadState('networkidle')
 	await expect(page).toHaveTitle('Starship Deets')

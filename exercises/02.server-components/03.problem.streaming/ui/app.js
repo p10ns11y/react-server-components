@@ -1,13 +1,13 @@
-import { Fragment, createElement as h } from 'react'
+import { Fragment, createElement as h, Suspense } from 'react'
 import {
 	ShipDetails,
 	// 💰 you'll want this:
-	// ShipFallback
+	ShipFallback
 } from './ship-details.js'
 import {
 	SearchResults,
 	// 💰 you'll want this:
-	// SearchResultsFallback
+	SearchResultsFallback
 } from './ship-search-results.js'
 
 export function App({ shipId, search }) {
@@ -34,13 +34,19 @@ export function App({ shipId, search }) {
 				h(
 					'ul',
 					null,
+					h(
+						Suspense,
+						{
+							fallback: h(SearchResultsFallback),
+						},
+						h(SearchResults, { shipId, search }),
+					)
 					// 🐨 wrap this in a Suspense boundary with the fallback set to
 					// h(SearchResultsFallback)
 					// 💰 remember it's h(Component, props, child1, child2, child3)
 					// 💰 don't feel too bad if you need to reference the diff on this one
 					// it's kinda hard to go back to non-JSX after you've been used to
 					// using JSX for a while 😅
-					h(SearchResults, { shipId, search }),
 				),
 			),
 		),
@@ -49,7 +55,13 @@ export function App({ shipId, search }) {
 			{ className: 'details' },
 			shipId
 				? // 🐨 wrap this in a Suspense boundary with the fallback set to h(ShipFallback, { shipId })
-					h(ShipDetails, { shipId })
+					h(
+						Suspense,
+						{
+							fallback: h(ShipFallback, { shipId })
+						},
+						h(ShipDetails, { shipId })
+					)
 				: h('p', null, 'Select a ship from the list to see details'),
 		),
 	)

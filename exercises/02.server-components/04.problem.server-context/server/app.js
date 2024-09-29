@@ -9,7 +9,7 @@ import { createElement as h } from 'react'
 import { renderToPipeableStream } from 'react-server-dom-esm/server'
 import { App } from '../ui/app.js'
 // 💰 you'll want this:
-// import { shipDataStorage } from './async-storage.js'
+import { shipDataStorage } from './async-storage.js'
 
 const PORT = process.env.PORT || 3000
 
@@ -47,11 +47,13 @@ app.get('/rsc/:shipId?', async context => {
 	const shipId = context.req.param('shipId') || null
 	const search = context.req.query('search') || ''
 	// 🐨 rename this to data (again 😅)
-	const props = { shipId, search }
+	const data = { shipId, search }
 
 	// 🐨 wrap this 👇 in shipDataStorage.run providing the data and remove the props from App
-	const { pipe } = renderToPipeableStream(h(App, props))
-	pipe(context.env.outgoing)
+	shipDataStorage.run(data, () => {
+		const { pipe } = renderToPipeableStream(h(App))
+	    pipe(context.env.outgoing)
+	})
 	// 🐨 wrap this 👆
 
 	return RESPONSE_ALREADY_SENT

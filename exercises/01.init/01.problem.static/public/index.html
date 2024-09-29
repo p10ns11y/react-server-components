@@ -5,7 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<link rel="preload" as="image" href="/img/fallback-ship.png" />
 		<!-- 🐨 add an importmap script so imports for dependencies are resolved properly -->
-		<!-- <script type="importmap">
+		<script type="importmap">
 			{
 				"imports": {
 					"react": "https://esm.sh/react@19.0.0-beta-94eed63c49-20240425?pin=v126&dev",
@@ -13,7 +13,8 @@
 					"react-dom/client": "https://esm.sh/react-dom@19.0.0-beta-94eed63c49-20240425/client?pin=v126&dev"
 				}
 			}
-		</script> -->
+		</script>
+		<script type="module" src="/ui/index.js"></script>
 		<title>Starship Deets</title>
 		<link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="stylesheet" href="/style.css" />

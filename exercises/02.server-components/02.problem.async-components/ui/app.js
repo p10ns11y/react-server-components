@@ -3,7 +3,7 @@ import { ShipDetails } from './ship-details.js'
 import { SearchResults } from './ship-search-results.js'
 
 // 💣 remove the ship and shipResults props
-export function App({ shipId, search, ship, shipResults }) {
+export function App({ shipId, search }) {
 	return h(
 		'div',
 		{ className: 'app' },
@@ -25,7 +25,7 @@ export function App({ shipId, search, ship, shipResults }) {
 					}),
 				),
 				// 💣 remove the shipResults prop
-				h('ul', null, h(SearchResults, { shipId, search, shipResults })),
+				h('ul', null, h(SearchResults, { shipId, search })),
 			),
 		),
 		h(
@@ -33,7 +33,7 @@ export function App({ shipId, search, ship, shipResults }) {
 			{ className: 'details' },
 			shipId
 				? // 🐨 replace the ship prop with a shipId prop
-					h(ShipDetails, { ship })
+					h(ShipDetails, { shipId })
 				: h('p', null, 'Select a ship from the list to see details'),
 		),
 	)
