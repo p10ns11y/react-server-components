@@ -1,4 +1,4 @@
-import { Suspense, createElement as h, startTransition, use } from 'react'
+import { Suspense, createElement as h, startTransition, use, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import * as RSC from 'react-server-dom-esm/client'
 import { ErrorBoundary } from './error-boundary.js'
@@ -7,7 +7,7 @@ import {
 	RouterContext,
 	getGlobalLocation,
 	// 💰 you'll need this
-	// useLinkHandler,
+	useLinkHandler,
 } from './router.js'
 
 function fetchContent(location) {
@@ -24,26 +24,33 @@ const initialLocation = getGlobalLocation()
 const initialContentPromise = createFromFetch(fetchContent(initialLocation))
 
 function Root() {
-	// 🐨 put this in state so we can update this as the user navigates
-	const location = initialLocation
-	// 🐨 put this in state so we can update this as the user navigates
-	const contentPromise = initialContentPromise
-
+	let [location, setLocation] = useState(initialLocation)
+	let [contentPromise, setContentPromise] = useState(initialContentPromise)
+	
 	// 🐨 this function should accept the nextLocation and an optional options argument
 	// that has a replace option which defaults to false (this will be used to
 	// determine whether we should call replaceState or pushState)
-	function navigate() {
-		// 🐨 set the location to the nextLocation
-		// 🐨 create a nextContentFetchPromise which is set to fetchContent(nextLocation)
-		// 🐨 add a .then handler to the fetch promise which accepts the response
-		//   - if replace is true, call window.history.replaceState({}, '', nextLocation)
-		//   - otherwise, call window.history.pushState({}, '', nextLocation)
-		//   - return the response
-		// 🐨 create a nextContentPromise variable set to createFromFetch(nextContentFetchPromise)
-		// 🐨 set the content promise inside a startTransition
+	function navigate(nextLocation, { action = 'push'} = {}) {
+		setLocation(nextLocation)
+		let nextContentFetchPromise = fetchContent(nextLocation)
+		  .then((response) => {
+			if (action === 'replace') {
+				window.history.replaceState({}, '', nextLocation)
+			} else {
+				window.history.pushState({}, '', nextLocation)
+			}
+
+			return response
+		  })
+
+		let nextContentPromise = createFromFetch(nextContentFetchPromise)
+		startTransition(() => {
+			setContentPromise(nextContentPromise)
+		})
 	}
 
 	// 🐨 call useLinkHandler with navigate so all links will navigate when clicked
+	useLinkHandler(navigate)
 
 	return h(
 		RouterContext,
