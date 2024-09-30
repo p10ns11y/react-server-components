@@ -47,9 +47,8 @@ app.get('/rsc/:shipId?', async context => {
 	const search = context.req.query('search') || ''
 	const data = { shipId, search }
 	shipDataStorage.run(data, () => {
-		// 🐨 create a moduleBasePath variable set to new URL('../ui', import.meta.url).href
-		// 🐨 pass the moduleBase path as a second argument to renderToPipeableStream
-		const { pipe } = renderToPipeableStream(h(App))
+		let moduleBasePath = new URL('../ui', import.meta.url).href
+		const { pipe } = renderToPipeableStream(h(App), moduleBasePath)
 		pipe(context.env.outgoing)
 	})
 	return RESPONSE_ALREADY_SENT
