@@ -1,3 +1,4 @@
+'use client'
 // 💰 add the 'use client' directive here
 
 import { createElement as h, useRef, useState } from 'react'

@@ -23,8 +23,8 @@ export async function load(url, context, defaultLoad) {
 	// 🐨 uncomment this so you can observe the changes the loader makes to our
 	// edit-text.js module.
 	// 💰
-	// if (url.includes('edit-text')) {
-	// 	console.log(result.source)
-	// }
+	if (url.includes('edit-text')) {
+		console.log(result.source)
+	}
 	return result
 }

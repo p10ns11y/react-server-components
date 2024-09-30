@@ -6,7 +6,7 @@
   "description": "Super simple implementation of RSCs with minimal deps",
   "main": "index.js",
   "scripts": {
-    "dev": "node --conditions=react-server --watch server/app.js",
+    "dev": "node --import ./server/register-rsc-loader.js --conditions=react-server --watch server/app.js",
     "test": "playwright test --config=./tests/playwright.config.js"
   },
   "keywords": [],
